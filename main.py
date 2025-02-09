@@ -24,6 +24,7 @@ def download_youtube_audio(youtube_url):
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
+        "cookiefile": "cookies.txt",  # Usar cookies para autenticación
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
@@ -36,6 +37,7 @@ def download_youtube_audio(youtube_url):
         return output_path
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error descargando el video: {str(e)}")
+
 
 # Función para transcribir el audio con Whisper
 def transcribe_audio(audio_path):
