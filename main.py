@@ -1,33 +1,17 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from pydantic import BaseModel
 import whisper
-import os
-from uuid import uuid4
-import shutil
+import torch
 
-app = FastAPI()
+# Verificar si hay GPU disponible
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Carpeta temporal para archivos subidos
-UPLOAD_DIR = "/tmp/uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# Cargar el modelo de Whisper
+try:
+    model = whisper.load_model("small", device=device)
+except Exception as e:
+    raise RuntimeError(f"Error al cargar el modelo de Whisper: {str(e)}")
 
-# Modelo de solicitud para la transcripción manual
-class TranscriptionRequest(BaseModel):
-    transcription: str
-
-# Endpoint para subir el archivo de video
-@app.post("/subir-video/")
-async def upload_video(file: UploadFile = File(...)):
-    try:
-        # Guardar el archivo en el servidor
-        file_location = f"{UPLOAD_DIR}/{uuid4()}-{file.filename}"
-        with open(file_location, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-        
-        return {"mensaje": "Archivo subido correctamente", "ruta": file_location}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al subir el archivo: {str(e)}")
 
 # Endpoint para transcribir el video
 @app.post("/transcribir/")
