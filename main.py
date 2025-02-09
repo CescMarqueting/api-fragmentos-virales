@@ -6,6 +6,8 @@ import whisper
 import os
 from uuid import uuid4
 import spacy
+import spacy.cli
+spacy.cli.download("es_core_news_sm")
 
 app = FastAPI()
 
