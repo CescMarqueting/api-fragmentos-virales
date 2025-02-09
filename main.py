@@ -39,7 +39,14 @@ async def transcribir_video(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, buffer)
         
         # Cargar el modelo de Whisper
-        model = whisper.load_model("small")
+        import whisper
+
+try:
+    model = whisper.load_model("small")
+except AttributeError:
+    import torch
+    model = whisper.Whisper.load_model("small", device="cpu" if not torch.cuda.is_available() else "cuda")
+
         result = model.transcribe(file_location)
 
         return {"transcripcion": result["text"]}
