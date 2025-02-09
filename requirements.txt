@@ -4,3 +4,4 @@ yt-dlp
 whisper
 spacy
 spacy[es]
+python-multipart
