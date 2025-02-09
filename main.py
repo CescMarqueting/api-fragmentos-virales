@@ -19,24 +19,34 @@ class VideoRequest(BaseModel):
     youtube_url: str
 
 # Función para descargar el video de YouTube
+import os
+
 def download_youtube_audio(youtube_url):
     output_path = f"/tmp/{uuid4()}.mp3"
+    
+    # Guardar las cookies en un archivo temporal
+    cookies_path = "/tmp/youtube_cookies.txt"
+    with open(cookies_path, "w") as f:
+        f.write(os.getenv("YOUTUBE_COOKIES", ""))  # Obtener cookies de las variables de entorno
+    
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
-        "cookiefile": "cookies.txt",  # Usa cookies autenticadas de YouTube
+        "cookiefile": cookies_path,  # Usar cookies de Render
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
     }
+    
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([youtube_url])
         return output_path
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error descargando el video: {str(e)}")
+
 
 
 
