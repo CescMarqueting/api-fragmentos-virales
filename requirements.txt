@@ -5,3 +5,5 @@ whisper
 spacy
 spacy[es]
 python-multipart
+openai-whisper
+ffmpeg
