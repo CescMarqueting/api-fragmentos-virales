@@ -88,3 +88,4 @@ def analizar_video(request: VideoRequest):\
 \
     return \{"fragmentos": candidate_fragments\}\
 }
+# Pequeño cambio para forzar redeploy en Render
