@@ -24,17 +24,13 @@ def download_youtube_audio(youtube_url):
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
-        "cookiefile": "/tmp/cookies.txt",  # Usar cookies autenticadas
+        "cookiefile": "cookies.txt",  # Usa cookies autenticadas de YouTube
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
     }
-    
-    # Extraer cookies desde el navegador y guardarlas en /tmp/cookies.txt
-    os.system("yt-dlp --cookies-from-browser chrome -o /tmp/cookies.txt")
-
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([youtube_url])
