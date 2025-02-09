@@ -24,15 +24,15 @@ import os
 def download_youtube_audio(youtube_url):
     output_path = f"/tmp/{uuid4()}.mp3"
     
-    # Guardar las cookies en un archivo temporal
+    # Crear el archivo de cookies en Render
     cookies_path = "/tmp/youtube_cookies.txt"
-    with open(cookies_path, "w") as f:
-        f.write(os.getenv("YOUTUBE_COOKIES", ""))  # Obtener cookies de las variables de entorno
+    with open(cookies_path, "w", encoding="utf-8") as f:
+        f.write(os.getenv("YOUTUBE_COOKIES", ""))  # Obtener cookies desde Render
     
     ydl_opts = {
         "format": "bestaudio/best",
         "outtmpl": output_path,
-        "cookiefile": cookies_path,  # Usar cookies de Render
+        "cookiefile": cookies_path,  # Usar cookies almacenadas en Render
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
